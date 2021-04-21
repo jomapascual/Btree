@@ -58,7 +58,7 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
     	bufMgr -> allocPage(file, rootPageNum, rootPage); // Allocate root page
 
 		meta = (IndexMetaInfo*) headerPage;
-		strcpy(meta -> relationName, relationName.c_str()); //= this -> relationName;
+		strcpy(meta -> relationName, relationName.c_str());
 		meta -> attrByteOffset = attrByteOffset;
 		meta -> attrType = attrType;
 		// Need rootPageNum
@@ -66,11 +66,22 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 		bufMgr -> unPinPage(file, headerPageNum, false); 
 		bufMgr -> unPinPage(file, rootPageNum, false); 
 
-		// Scan Records
-		
+		// Scans Records
+		scanExecuting = true;
+		try {
+			while(1) {
+				FileScan scan = FileScan(relationName, bufMgr);
+				RecordId rid;
+				scan.scanNext(rid);
+				std::string fileRecord = scan.getRecord();
+				// InsertEntry needed
+			}
+		}
+		catch (EndOfFileException e) {
+			// Don't do anything, end of loop
+			// Consider saving Btree ?
+		}
 	}
-
-
 }
 
 
@@ -81,6 +92,10 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 BTreeIndex::~BTreeIndex()
 {
     // Add your code below. Please do not remove this line.
+	// Check if we are still scanning
+	scanExecuting = false;
+	bufMgr -> flushFile(file);
+	delete file;
 }
 
 // -----------------------------------------------------------------------------
