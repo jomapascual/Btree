@@ -33,6 +33,44 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 		const Datatype attrType)
 {
     // Add your code below. Please do not remove this line.
+	bufMgr = bufMgrIn;
+	//this.attrByteOffset -> attrByteOffset;
+	attributeType = attrType;
+
+	std::ostringstream idxStr;
+	idxStr << relationName << "." << attrByteOffset ;
+	std::string indexName = idxStr.str();
+
+	Page *headerPage, *rootPage, *leafPage;
+	IndexMetaInfo* meta;
+	try {
+		file = new BlobFile(indexName, false); // Checks if the file exists
+
+		headerPageNum = file -> getFirstPageNo();
+		bufMgr -> readPage(file, headerPageNum, headerPage); // Reads the first page (meta)
+		rootPageNum = ((IndexMetaInfo*) headerPage) -> rootPageNo; // Held in the meta page
+
+		bufMgr -> unPinPage(file, headerPageNum, false); 
+		bufMgr -> unPinPage(file, rootPageNum, false);
+	}
+	catch (FileNotFoundException e) {
+		bufMgr -> allocPage(file, headerPageNum, headerPage); // Allocate header page
+    	bufMgr -> allocPage(file, rootPageNum, rootPage); // Allocate root page
+
+		meta = (IndexMetaInfo*) headerPage;
+		strcpy(meta -> relationName, relationName.c_str()); //= this -> relationName;
+		meta -> attrByteOffset = attrByteOffset;
+		meta -> attrType = attrType;
+		// Need rootPageNum
+
+		bufMgr -> unPinPage(file, headerPageNum, false); 
+		bufMgr -> unPinPage(file, rootPageNum, false); 
+
+		// Scan Records
+		
+	}
+
+
 }
 
 
