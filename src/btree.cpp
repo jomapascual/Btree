@@ -95,7 +95,6 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 BTreeIndex::~BTreeIndex()
 {
     // Add your code below. Please do not remove this line.
-	// Check if we are still scanning
 	scanExecuting = false;
 	bufMgr -> flushFile(file);
 	delete file;
