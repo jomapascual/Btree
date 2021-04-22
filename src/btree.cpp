@@ -57,11 +57,14 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 		bufMgr -> allocPage(file, headerPageNum, headerPage); // Allocate header page
     	bufMgr -> allocPage(file, rootPageNum, rootPage); // Allocate root page
 
-		meta = (IndexMetaInfo*) headerPage;
+		meta = (IndexMetaInfo*) headerPage; // Fills in meta info
 		strcpy(meta -> relationName, relationName.c_str());
 		meta -> attrByteOffset = attrByteOffset;
 		meta -> attrType = attrType;
-		// Need rootPageNum
+		meta -> rootPageNo = rootPageNum;
+		
+		LeafNodeInt *root = (LeafNodeInt *)rootPage; // Initializes the root
+    	root -> rightSibPageNo = 0;
 
 		bufMgr -> unPinPage(file, headerPageNum, false); 
 		bufMgr -> unPinPage(file, rootPageNum, false); 
