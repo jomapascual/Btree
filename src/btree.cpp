@@ -78,7 +78,7 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 			}
 		}
 		catch (EndOfFileException e) {
-			// Don't do anything, end of loop
+			bufMgr -> flushFile(file);
 			// Consider saving Btree ?
 		}
 	}
