@@ -67,19 +67,19 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 		bufMgr -> unPinPage(file, rootPageNum, false); 
 
 		// Scans Records
+		FileScan scan = FileScan(relationName, bufMgr);
 		scanExecuting = true;
+		RecordId rid;
 		try {
 			while(1) {
-				FileScan scan = FileScan(relationName, bufMgr);
-				RecordId rid;
 				scan.scanNext(rid);
 				std::string fileRecord = scan.getRecord();
-				// InsertEntry needed
+				const char *record = fileRecord.c_str();
+				insertEntry(record + attrByteOffset, rid);
 			}
 		}
 		catch (EndOfFileException e) {
 			bufMgr -> flushFile(file);
-			// Consider saving Btree ?
 		}
 	}
 }
