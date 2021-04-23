@@ -338,7 +338,7 @@ class BTreeIndex {
   /**
    * TODO - Add method description
   **/
-  void BTreeIndex::insertNonLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey);
+  void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage);
 
 
   /**
