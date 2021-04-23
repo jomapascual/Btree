@@ -364,6 +364,12 @@ class BTreeIndex {
 	 * @throws ScanNotInitializedException If no scan has been initialized.
 	**/
 	void endScan();
+
+  // Helper method to insert and split root
+  void insertRoot();
+
+  // Helper Method to insert and split leaf
+  void insertLeaf();
 	
 };
 
