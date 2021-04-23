@@ -131,6 +131,33 @@ void BTreeIndex::insertLeaf(){
 
 }
 
+void BTreeIndex::insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey) // Should use parameters like this
+{
+	if (leafNode -> ridArray[0].page_number == 0) { // Page is empty
+		leafNode -> keyArray[0] = ridKey.key;
+		leafNode -> ridArray[0] = ridKey.rid;    
+	}
+	else {
+		int i = INTARRAYLEAFSIZE; // Number of keys in the leaf node
+		while((leafNode -> ridArray[i-1].page_number == 0) && i > 0) { // Gets to the end of leafNode
+			i--;
+		}
+
+		while((leafNode->keyArray[i-1] > ridKey.key) && i > 0) { // Shifts the previous ridKey
+			leafNode->keyArray[i] = leafNode->keyArray[i-1];
+			leafNode->ridArray[i] = leafNode->ridArray[i-1];
+			i--;
+		}
+
+		leafNode -> keyArray[i] = ridKey.key; // Inserts ridKey to the leafNode
+		leafNode -> ridArray[i] = ridKey.rid;
+	}
+}
+
+void BTreeIndex::insertNonLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey) {
+	
+}
+
 // -----------------------------------------------------------------------------
 // BTreeIndex::startScan
 // -----------------------------------------------------------------------------
