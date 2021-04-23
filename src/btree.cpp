@@ -116,7 +116,7 @@ void BTreeIndex::insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey) // Sh
 		leafNode -> ridArray[0] = ridKey.rid;    
 	}
 	else {
-		int i = INTARRAYLEAFSIZE; // Number of keys in the leaf node
+		int i = INTARRAYLEAFSIZE; // Number of keys in the leaf node // Maybe change to leafOccupancy ?
 		while((leafNode -> ridArray[i-1].page_number == 0) && i > 0) { // Gets to the end of leafNode
 			i--;
 		}
@@ -133,7 +133,7 @@ void BTreeIndex::insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey) // Sh
 }
 
 void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage) {
-	int i = INTARRAYNONLEAFSIZE;
+	int i = INTARRAYNONLEAFSIZE; // Maybe change to nodeOccupancy ?
 	while((node -> pageNoArray[i] == 0) && i > 0) {
 		i--;
 	}
