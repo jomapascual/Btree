@@ -330,6 +330,16 @@ class BTreeIndex {
 	**/
 	void insertEntry(const void* key, const RecordId rid);
 
+  /**
+   * TODO - Add method description
+  **/
+  void insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey);
+
+  /**
+   * TODO - Add method description
+  **/
+  void BTreeIndex::insertNonLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey);
+
 
   /**
 	 * Begin a filtered scan of the index.  For instance, if the method is called 
