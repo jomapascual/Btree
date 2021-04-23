@@ -121,9 +121,9 @@ void BTreeIndex::insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey) // Sh
 			i--;
 		}
 
-		while((leafNode->keyArray[i-1] > ridKey.key) && i > 0) { // Shifts the previous ridKey
-			leafNode->keyArray[i] = leafNode->keyArray[i-1];
-			leafNode->ridArray[i] = leafNode->ridArray[i-1];
+		while((leafNode -> keyArray[i-1] > ridKey.key) && i > 0) { // Shifts the previous ridKey pairs
+			leafNode -> keyArray[i] = leafNode -> keyArray[i-1];
+			leafNode -> ridArray[i] = leafNode -> ridArray[i-1];
 			i--;
 		}
 
@@ -132,8 +132,19 @@ void BTreeIndex::insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey) // Sh
 	}
 }
 
-void BTreeIndex::insertNonLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey) {
-	
+void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage) {
+	int i = INTARRAYNONLEAFSIZE;
+	while((node -> pageNoArray[i] == 0) && i > 0) {
+		i--;
+	}
+	while((node -> keyArray[i-1] > keyPage.key) && i > 0) {
+		node -> pageNoArray[i+1] = node -> pageNoArray[i]; // TODO not 100% sure if this is the right way to shift pageNo
+		node -> keyArray[i] = node -> pageNoArray[i-1]; // Shifts the previous keyPage pairs
+		i--;
+	}
+
+	node -> pageNoArray[i+1] = keyPage.pageNo; // Inserts keyPage pair to the node
+	node -> keyArray[i] = keyPage.key;
 }
 
 // -----------------------------------------------------------------------------
