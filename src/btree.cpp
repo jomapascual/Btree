@@ -132,7 +132,8 @@ void BTreeIndex::insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey) // Sh
 	}
 }
 
-void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage) {
+void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
+{
 	int i = INTARRAYNONLEAFSIZE; // Maybe change to nodeOccupancy ?
 	while((node -> pageNoArray[i] == 0) && i > 0) {
 		i--;
@@ -146,6 +147,42 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage) {
 	node -> pageNoArray[i+1] = keyPage.pageNo; // Inserts keyPage pair to the node
 	node -> keyArray[i] = keyPage.key;
 }
+
+  PageKeyPair<int>* BTreeIndex::splitLeafNode(LeafNodeInt *oldLeafNode, PageId currPageId, RIDKeyPair<int> ridPair)
+  {
+	// allocate new leaf sibling
+	Page* sibling;
+	PageId siblingId;
+	bufMgr -> allocPage(file, siblingId, sibling);
+	// convert to proper structure
+	LeafNodeInt* siblingNode = (LeafNodeInt*) sibling;
+
+	// current leaf node gets right sibling page number added to it
+	if (oldLeafNode -> rightSibPageNo != 0) {
+		siblingNode -> rightSibPageNo = oldLeafNode -> rightSibPageNo;
+	}
+	oldLeafNode -> rightSibPageNo = siblingId;
+
+	// split current leaf into two seperate leaves
+	for (int i = 0; i < INTARRAYLEAFSIZE / 2; ++i) {
+		// split somehow:
+
+
+	}
+
+	// insert pair into the split leaves
+	if (ridPair.key < siblingNode -> keyArray[0]) {
+		insertLeaf(oldLeafNode, ridPair);
+	}
+	else {
+		insertLeaf(siblingNode, ridPair);
+	}
+
+	// calculate new middle key pair:
+
+	// return recursive to move up tree
+  }
+
 
 // -----------------------------------------------------------------------------
 // BTreeIndex::startScan
