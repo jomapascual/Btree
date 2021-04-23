@@ -378,8 +378,6 @@ class BTreeIndex {
   // Helper method to insert and split root
   void insertRoot();
 
-  // Helper Method to insert and split leaf
-  void insertLeaf();
 	
 };
 

@@ -127,10 +127,6 @@ void BTreeIndex::insertRoot(){
 	
 }
 
-void BTreeIndex::insertLeaf(){
-
-}
-
 void BTreeIndex::insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey) // Should use parameters like this
 {
 	if (leafNode -> ridArray[0].page_number == 0) { // Page is empty
