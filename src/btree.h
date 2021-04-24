@@ -333,12 +333,18 @@ class BTreeIndex {
   /**
    * TODO - Add method description
   **/
-  void insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridKey);
+  void insertLeaf(LeafNodeInt *leafNode, RIDKeyPair<int> ridPair);
 
   /**
    * TODO - Add method description
   **/
   void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage);
+
+  /**
+   * TODO - Add method description
+  **/
+  PageKeyPair<int>* BTreeIndex::splitLeafNode(LeafNodeInt *oldLeafNode, PageId currPageId, RIDKeyPair<int> ridPair);
+
 
 
   /**
