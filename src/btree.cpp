@@ -201,6 +201,20 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
 	// return recursive to move up tree
   }
 
+//splitNonLeaf
+//splitRoot
+
+ PageKeyPair<int>* BTreeIndex::splitNonLeafNode(NonLeafNodeInt *oldNonLeafNode, PageId currPageId, RIDKeyPair<int> ridPair)
+ {
+	 // allocate new non-leaf sibling
+	 Page* sibling;
+	 PageId siblingId;
+	 bufMgr -> allocPage(file, siblingId, sibling);
+	 // convert to proper structure
+	 NonLeafNodeInt* siblingNode = (NonLeafNodeInt*) sibling;
+
+ }
+
 
 // -----------------------------------------------------------------------------
 // BTreeIndex::startScan
