@@ -184,8 +184,10 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
 	// split current leaf into two seperate leaves
 	for (int i = 0; i < INTARRAYLEAFSIZE / 2; ++i) {
 		// split somehow:
-
-
+		siblingNode -> keyArray[i] = oldLeafNode -> keyArray[(INTARRAYLEAFSIZE/2) + i]; // Right half of old node gets put into new node
+		siblingNode -> ridArray[i] = oldLeafNode -> ridArray[(INTARRAYLEAFSIZE/2) + i];
+		oldLeafNode -> keyArray[(INTARRAYLEAFSIZE/2) + i] = 0; // Right half of old node set to 0
+		oldLeafNode -> ridArray[(INTARRAYLEAFSIZE/2) + i].page_number = 0;
 	}
 
 	// insert pair into the split leaves
