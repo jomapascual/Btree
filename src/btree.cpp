@@ -148,11 +148,11 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
 	node -> keyArray[i] = keyPage.key;
 }
 
-  PageKeyPair<int>* BTreeIndex::splitLeafNode(LeafNodeInt *oldLeafNode, PageId currPageId, RIDKeyPair<int> ridPair)
+  PageKeyPair<int> BTreeIndex::splitLeafNode(LeafNodeInt *oldLeafNode, PageId currPageId, RIDKeyPair<int> ridPair)
   {
 	// allocate new leaf sibling
 	Page* sibling;
-	PageId siblingId;
+	PageId siblingId; // new leaf sibling page number
 	bufMgr -> allocPage(file, siblingId, sibling);
 	// convert to proper structure
 	LeafNodeInt* siblingNode = (LeafNodeInt*) sibling;
@@ -181,8 +181,11 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
 	}
 
 	// calculate new middle key pair:
+	PageKeyPair<int> middleKeyPair;
+	middleKeyPair.set(siblingId, siblingNode -> keyArray[0]);
 
 	// return recursive to move up tree
+	return middleKeyPair;
   }
 
 

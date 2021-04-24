@@ -343,7 +343,7 @@ class BTreeIndex {
   /**
    * TODO - Add method description
   **/
-  PageKeyPair<int>* BTreeIndex::splitLeafNode(LeafNodeInt *oldLeafNode, PageId currPageId, RIDKeyPair<int> ridPair);
+  PageKeyPair<int> BTreeIndex::splitLeafNode(LeafNodeInt *oldLeafNode, PageId currPageId, RIDKeyPair<int> ridPair);
 
 
 
