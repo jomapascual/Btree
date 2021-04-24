@@ -206,11 +206,10 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
 	return middleKeyPair;
   }
 
-<<<<<<< HEAD
 //splitNonLeaf
 //splitRoot
 
- PageKeyPair<int>* BTreeIndex::splitNonLeafNode(NonLeafNodeInt *oldNonLeafNode, PageId currPageId, PageKeyPair<int>*&newPair)
+void BTreeIndex::splitNonLeafNode(NonLeafNodeInt *oldNonLeafNode, PageId currPageId, PageKeyPair<int>*&newPair)
  {
 	 // allocate new non-leaf sibling
 	 Page* sibling;
@@ -262,10 +261,10 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
 
 	if(currPageId == rootPageNum)
 	{
-		updateRootNode(currPageId, newPair);
+		updateRootNode(*newPair, currPageId);
 	}
  }
-=======
+
 void BTreeIndex::updateRootNode(PageKeyPair<int> keyPage, PageId currPage) {
 	Page* root;
 	PageId rootId; // new root page number
@@ -287,7 +286,6 @@ void BTreeIndex::updateRootNode(PageKeyPair<int> keyPage, PageId currPage) {
 	// Update pins needed?
 	bufMgr -> unPinPage(file, rootId, true);
 }
->>>>>>> 9f7b91afe8582b2bc94b3ed4dd32742fe82726cc
 
 
 // -----------------------------------------------------------------------------
