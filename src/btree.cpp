@@ -206,7 +206,7 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
 //splitNonLeaf
 //splitRoot
 
- PageKeyPair<int>* BTreeIndex::splitNonLeafNode(NonLeafNodeInt *oldNonLeafNode, PageId currPageId, RIDKeyPair<int> ridPair)
+ PageKeyPair<int>* BTreeIndex::splitNonLeafNode(NonLeafNodeInt *oldNonLeafNode, PageId currPageId, PageKeyPair<int>*&newPair)
  {
 	 // allocate new non-leaf sibling
 	 Page* sibling;
@@ -215,6 +215,51 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
 	 // convert to proper structure
 	 NonLeafNodeInt* siblingNode = (NonLeafNodeInt*) sibling;
 
+	 // middle range
+	 int middle = nodeOccupancy / 2;
+	 int pushUp = middle;
+	 PageKeyPair<int> nodeToPush;
+
+	// check if full, to push up
+	 if(nodeOccupancy %2 == 0)
+	 {
+		 if(newPair -> key < oldNonLeafNode -> keyArray[middle])
+		 {
+			 pushUp = middle - 1;
+		 } else{
+			 pushUp = middle;
+		 }
+	 }
+	 nodeToPush.set(siblingId, oldNonLeafNode->keyArray[pushUp]);
+
+	middle = pushUp + 1;
+	for(int i = middle; i < nodeOccupancy; i++)
+	{
+		siblingNode -> keyArray[i - middle] = oldNonLeafNode -> keyArray[i];
+		siblingNode -> pageNoArray[i - middle] = oldNonLeafNode -> pageNoArray[i + 1];
+		oldNonLeafNode -> pageNoArray[i + 1] = (PageId) 0;
+		oldNonLeafNode -> keyArray[i + 1] = 0;
+	}
+
+	siblingNode -> level = oldNonLeafNode -> level;
+	oldNonLeafNode -> keyArray[pushUp] = 0;
+	oldNonLeafNode -> pageNoArray[pushUp] = (PageId) 0;
+
+	if(newPair -> key < siblingNode -> keyArray[0])
+	{
+		insertNonLeaf(oldNonLeafNode, *newPair);
+	} else{
+		insertNonLeaf(siblingNode, *newPair);
+	}
+
+	newPair = &nodeToPush;
+	bufMgr -> unPinPage(file, currPageId, true);
+	bufMgr -> unPinPage(file, siblingId, true);
+
+	if(currPageId == rootPageNum)
+	{
+		updateRootNode(currPageId, newPair);
+	}
  }
 
 
