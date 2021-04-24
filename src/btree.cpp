@@ -38,7 +38,7 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 	attributeType = attrType;
 
 	std::ostringstream idxStr;
-	idxStr << relationName << "." << attrByteOffset ;
+	idxStr << relationName << "." << attrByteOffset;
 	std::string indexName = idxStr.str();
 
 	Page *headerPage, *rootPage, *leafPage;
@@ -187,6 +187,28 @@ void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage)
 	// return recursive to move up tree
 	return middleKeyPair;
   }
+
+void BTreeIndex::updateRootNode(PageKeyPair<int> keyPage, PageId currPage) {
+	Page* root;
+	PageId rootId; // new root page number
+	bufMgr -> allocPage(file, rootId, root);
+	// convert to proper structure
+	NonLeafNodeInt *rootPage = (NonLeafNodeInt*) root;
+
+	// Need update level ?
+	rootPage -> keyArray[0] = keyPage.key;
+	rootPage -> pageNoArray[0] = currPage;
+	rootPage -> pageNoArray[1] = keyPage.pageNo;
+
+	Page *headerInfo;
+	bufMgr -> readPage(file, headerPageNum, headerInfo); // Reads the first page (meta)
+	IndexMetaInfo *headerPage = (IndexMetaInfo *) headerInfo;
+	rootPageNum = rootId;
+	headerPage -> rootPageNo = rootId;
+
+	// Update pins needed?
+	bufMgr -> unPinPage(file, rootId, true);
+}
 
 
 // -----------------------------------------------------------------------------

@@ -345,7 +345,10 @@ class BTreeIndex {
   **/
   PageKeyPair<int> BTreeIndex::splitLeafNode(LeafNodeInt *oldLeafNode, PageId currPageId, RIDKeyPair<int> ridPair);
 
-
+  /**
+   * TODO - Add method description
+  **/
+  void BTreeIndex::updateRootNode(PageKeyPair<int> keyPage, PageId currPage);
 
   /**
 	 * Begin a filtered scan of the index.  For instance, if the method is called 
