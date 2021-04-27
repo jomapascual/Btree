@@ -336,7 +336,7 @@ const int BTreeIndex::startScanHelper(PageId pageNum)
 	bufMgr -> readPage(file, currentPageNum, currentPageData);
 	currNode = (NonLeafNodeInt*)currentPageData;
 	for (int i = 0; i < INTARRAYNONLEAFSIZE + 1; ++i) {
-		if (i == INTARRAYNONLEAFSIZE || currNode -> pageNoArray[i + 1] == INVALID_NUMBER || currNode -> keyArray[i] > lowValInt) {
+		if (i == INTARRAYNONLEAFSIZE || currNode -> pageNoArray[i + 1] == Page::INVALID_NUMBER || currNode -> keyArray[i] > lowValInt) {
             // node is directly above leaf node 
             if (currNode -> level == 1) { 
                 // read child page (leaf), then update
@@ -345,7 +345,7 @@ const int BTreeIndex::startScanHelper(PageId pageNum)
                 child = (LeafNodeInt*)currentPageData;
                 // scan page, return index
                 for(int j = 0; j < INTARRAYLEAFSIZE; ++j){
-                    if (child -> ridArray[j] == INVALID_SLOT) {
+                    if (child -> ridArray[j] == Page::INVALID_SLOT) {
                         break;
                     }
                     if ((lowOp == GT && child -> keyArray[j] > lowValInt)
@@ -395,6 +395,22 @@ void BTreeIndex::scanNext(RecordId& outRid)
 void BTreeIndex::endScan() 
 {
     // Add your code below. Please do not remove this line.
+	//check if scan has been initialized
+	if(scanExecuting == false){
+		throw ScanNotInitializedException();
+	}
+	//terminate scan
+	scanExecuting = false;
+	//unpin pages
+	bufMgr -> unPinPage(file, currentPageNum, false);
+	//reset scan specific variables
+	nextEntry = -1;
+	currentPageNum = -1;
+	currentPageData = nullptr;
+	lowValInt = -1;
+	highValInt = -1;
+	lowOp = (Operator)-1;
+	highOp = (Operator)-1;
 }
 
 }
