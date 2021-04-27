@@ -336,7 +336,7 @@ const int BTreeIndex::startScanHelper(PageId pageNum)
 	bufMgr -> readPage(file, currentPageNum, currentPageData);
 	currNode = (NonLeafNodeInt*)currentPageData;
 	for (int i = 0; i < INTARRAYNONLEAFSIZE + 1; ++i) {
-		if (i == INTARRAYNONLEAFSIZE || currNode -> pageNoArray[i + 1] == INVALID_NUMBER || currNode -> keyArray[i] > lowValInt) {
+		if (i == INTARRAYNONLEAFSIZE || currNode -> pageNoArray[i + 1] == PAGE::INVALID_NUMBER || currNode -> keyArray[i] > lowValInt) {
             // node is directly above leaf node 
             if (currNode -> level == 1) { 
                 // read child page (leaf), then update
@@ -345,7 +345,7 @@ const int BTreeIndex::startScanHelper(PageId pageNum)
                 child = (LeafNodeInt*)currentPageData;
                 // scan page, return index
                 for(int j = 0; j < INTARRAYLEAFSIZE; ++j){
-                    if (childNode -> ridArray[j] == INVALID_SLOT) {
+                    if (childNode -> ridArray[j] == Page::INVALID_SLOT) {
                         break;
                     }
                     if ((lowOp == GT && child -> keyArray[j] > lowValInt)
