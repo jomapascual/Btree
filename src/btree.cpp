@@ -395,6 +395,22 @@ void BTreeIndex::scanNext(RecordId& outRid)
 void BTreeIndex::endScan() 
 {
     // Add your code below. Please do not remove this line.
+	//check if scan has been initialized
+	if(scanExecuting == false){
+		throw ScanNotInitializedException();
+	}
+	//terminate scan
+	scanExecuting = false;
+	//unpin pages
+	bufMgr -> unPinPage(file, currentPageNum, false);
+	//reset scan specific variables
+	nextEntry = -1;
+	currentPageNum = -1;
+	currentPageData = nullptr;
+	lowValInt = -1;
+	highValInt = -1;
+	lowOp = (Operator)-1;
+	highOp = (Operator)-1;
 }
 
 }
