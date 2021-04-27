@@ -372,6 +372,10 @@ class BTreeIndex {
 	**/
 	void startScan(const void* lowVal, const Operator lowOp, const void* highVal, const Operator highOp);
 
+  /**
+   * TODO - Add method description
+  **/
+  const int startScanHelper(PageId pageNum);
 
   /**
 	 * Fetch the record id of the next index entry that matches the scan.

@@ -298,7 +298,86 @@ void BTreeIndex::startScan(const void* lowValParm,
 				   const Operator highOpParm)
 {
     // Add your code below. Please do not remove this line.
+
+	// end other scans
+	if (scanExecuting) {
+		endScan();
+	}
+
+	// initial conditions and exceptions
+	if (lowOpParm != GT && lowOpParm != GTE) {
+		throw BadOpcodesException();
+	}
+	if (highOpParm != LT && highOpParm != LTE) {
+		throw BadOpcodesException();
+	}
+	
+	lowValInt = *((int *)lowValParm);
+	highValInt = *((int *)highValParm);
+	if (lowValInt > highValInt) {
+		throw BadScanrangeException();
+	}
+
+	lowOp = lowOpParm;
+	highOp = highOpParm;
+
+	// start new scan
+	scanExecuting = true;
+	nextEntry = startScanHelper(rootPageNum);
+
 }
+
+const int BTreeIndex::startScanHelper(PageId pageNum)
+{
+	NonLeafNodeInt* currNode;
+	LeafNodeInt* child;
+
+	currentPageNum = pageNum;
+	bufMgr -> readPage(file, currentPageNum, currentPageData);
+	currNode = (NonLeafNodeInt*)currentPageData;
+	for (int i = 0; i < INTARRAYNONLEAFSIZE + 1; ++i) {
+		if (i == INTARRAYNONLEAFSIZE || currNode -> pageNoArray[i + 1] == INVALID_NUMBER || currNode -> keyArray[i] > lowValInt) {
+            // node is directly above leaf node 
+            if (currNode -> level == 1) { 
+                // read child page (leaf), then update
+                currentPageNum = currNode -> pageNoArray[i];
+                bufMgr -> readPage(file, currentPageNum, currentPageData);
+                child = (LeafNodeInt*)currentPageData;
+                // scan page, return index
+                for(int j = 0; j < INTARRAYLEAFSIZE; ++j){
+                    if (childNode -> ridArray[j] == INVALID_SLOT) {
+                        break;
+                    }
+                    if ((lowOp == GT && child -> keyArray[j] > lowValInt)
+                    || (lowOp == GTE && child -> keyArray[j] >= lowValInt)){
+                        bufMgr -> unPinPage(file, pageNum, false);
+                        return j;
+                    }
+                }   
+                // if not found by the end
+                bufMgr -> unPinPage(file, pageNum, false); 
+                endScan();  
+                throw NoSuchKeyFoundException();      
+            } else { 
+				// recursive call for nonLeaf nodes
+                try {
+                    int next = startScanHelper(currNode -> pageNoArray[i]);
+                    bufMgr -> unPinPage(file, pageNum, false);
+                    return next;
+                } catch (NoSuchKeyFoundException) {
+                    bufMgr -> unPinPage(file, pageNum, false);
+                    throw NoSuchKeyFoundException(); 
+                }
+            }
+        }
+    }
+
+	// impossible
+    assert(false);
+    return -1;
+
+}
+
 
 // -----------------------------------------------------------------------------
 // BTreeIndex::scanNext
