@@ -345,7 +345,7 @@ const int BTreeIndex::startScanHelper(PageId pageNum)
                 child = (LeafNodeInt*)currentPageData;
                 // scan page, return index
                 for(int j = 0; j < INTARRAYLEAFSIZE; ++j){
-                    if (childNode -> ridArray[j] == INVALID_SLOT) {
+                    if (child -> ridArray[j] == INVALID_SLOT) {
                         break;
                     }
                     if ((lowOp == GT && child -> keyArray[j] > lowValInt)
