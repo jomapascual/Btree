@@ -458,6 +458,48 @@ const int BTreeIndex::startScanHelper(PageId pageNum)
 void BTreeIndex::scanNext(RecordId& outRid) 
 {
     // Add your code below. Please do not remove this line.
+	if(scanExecuting == false) { // Checks if scan has been initialized
+		throw ScanNotInitializedException();
+	}
+
+	LeafNodeInt* leafNode = (LeafNodeInt*) currentPageData;
+	if(leafNode->ridArray[nextEntry] == INVALID_RECORD) { // Checks for valid nextEntry
+		throw IndexScanCompletedException();
+	}
+	else if(nextEntry == INT_MAX) {
+		throw IndexScanCompletedException(); // Scan has been completed
+	}
+	else {
+		int nextIndex = nextEntry;
+	}
+
+	if((leafNode -> keyArray[nextIndex] <= highValInt) && highOp == LTE) {
+		outRid = leafNode -> ridArray[nextIndex];
+	}
+	else if((leafNode -> keyArray[nextIndex] < highValInt) && highOp == LT) {
+		outRid = leafNode -> ridArray[nextIndex];
+	}
+	else {
+		throw IndexScanCompletedException(); // Scan has been completed
+	}
+
+	if(nextEntry < INTARRAYLEAFSIZE - 1) {
+		if(leafNode -> ridArray[nextEntry + 1] != INVALID_RECORD) { // Checks if there are no more pages left
+			nextEntry++; // increments nextEntry index
+		}
+		else {
+			if(leafNode -> rightSibPageNo == Page::INVALID_NUMBER) {
+				nextEntry = INT_MAX;
+			}
+			else { // Page has been fully scanned
+				PageId nextPageId = currentPageNum;
+				currentPageNum = leafNode -> rightSibPageNo; // Advances to the right sibling node
+				nextEntry = 0;
+				bufMgr -> readPage(file, currentPageNum, currentPageData); 
+				bufMgr -> unPinPage(file, nextPageId, false); // Unpins fully scanned pages
+			}
+		}
+	}
 }
 
 // -----------------------------------------------------------------------------
