@@ -429,7 +429,7 @@ const int BTreeIndex::startScanHelper(PageId pageNum)
                     int next = startScanHelper(currNode -> pageNoArray[i]);
                     bufMgr -> unPinPage(file, pageNum, false);
                     return next;
-                } catch (NoSuchKeyFoundException) {
+                } catch (NoSuchKeyFoundException e) {
                     bufMgr -> unPinPage(file, pageNum, false);
                     throw NoSuchKeyFoundException(); 
                 }
