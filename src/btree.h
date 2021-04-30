@@ -291,6 +291,11 @@ class BTreeIndex {
    */
 	Operator	highOp;
 
+  /**
+   * PageId of unplit root
+   */
+  PageId initialRootPageNum;
+
 	
  public:
 
@@ -338,22 +343,22 @@ class BTreeIndex {
   /**
    * TODO - Add method description
   **/
-  void BTreeIndex::insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage);
+  void insertNonLeaf(NonLeafNodeInt *node, PageKeyPair<int> keyPage);
 
   /**
    * TODO - Add method description
   **/
-  PageKeyPair<int> BTreeIndex::splitLeafNode(LeafNodeInt *oldLeafNode, PageId currPageId, RIDKeyPair<int> ridPair);
+  void splitLeafNode(LeafNodeInt *oldLeafNode, PageId currPageId, RIDKeyPair<int> ridPair);
 
   /**
    * TODO - Add method description
   **/
-  void BTreeIndex::splitNonLeafNode(NonLeafNodeInt *oldNonLeafNode, PageId currPageId, PageKeyPair<int> *&newPair);
+  void splitNonLeafNode(NonLeafNodeInt *oldNonLeafNode, PageId currPageId, PageKeyPair<int> *&newPair);
 
   /**
    * TODO - Add method description
   **/
-  void BTreeIndex::updateRootNode(PageKeyPair<int> keyPage, PageId currPage);
+  void updateRootNode(PageKeyPair<int> keyPage, PageId currPage);
 
   /**
 	 * Begin a filtered scan of the index.  For instance, if the method is called 
@@ -394,7 +399,7 @@ class BTreeIndex {
 	void endScan();
 
   // Helper method to insert and split root
-  void insertRoot();
+  void insertHelper(Page *page, PageId pageNum, bool isLeaf, const RIDKeyPair<int> newEntry, PageKeyPair<int> *&child);
 
 	
 };
