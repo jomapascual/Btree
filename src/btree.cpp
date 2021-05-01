@@ -122,17 +122,18 @@ BTreeIndex::~BTreeIndex()
 * @param node  corresponding leaf node to be modified
 * @param index index of a particular key and rid to be inserted
 */
-void BTreeIndex::insertLeafNode(int key,
-				    RecordId rid,
-				    LeafNodeInt* node,
-					int index) {
-	// Shift to the right key after index and insert key at the appropriate position
-	memmove(&node->keyArray[index + 1], &node->keyArray[index], sizeof(int) * (INTARRAYLEAFSIZE - index - 1));
-	node->keyArray[index] = key;
-	
-	// Do the same for rid
-	memmove(&node->ridArray[index + 1], &node->ridArray[index], sizeof(RecordId) * (INTARRAYLEAFSIZE - index - 1));
-	node->ridArray[index] = rid;
+void BTreeIndex::insertLeafNode(int key, RecordId rid, LeafNodeInt* node, int index) {
+	int i = INTARRAYLEAFSIZE; // Number of keys in the leaf node // Maybe change to leafOccupancy ?
+	while((node -> ridArray[i-1].page_number == 0) && i > 0) { // Gets to the end of leafNode
+		i--;
+	}
+	while((node -> keyArray[i-1] > key) && i > 0) { // Shifts the previous ridKey pairs
+		node -> keyArray[i] = node -> keyArray[i-1];
+		node -> ridArray[i] = node -> ridArray[i-1];
+		i--;
+	}
+	node -> keyArray[i] = key; // Inserts ridKey to the leafNode
+	node -> ridArray[i] = rid;
 
 	// Increment size
 	node->size += 1;
