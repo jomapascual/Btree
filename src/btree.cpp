@@ -1,6 +1,11 @@
 /**
  * @author See Contributors.txt for code contributors and overview of BadgerDB.
  *
+ * 		Names: 				Student IDs:
+ * 	   	- Jose Pascual			- 9078122448
+ *		- Samuel Ong			- 9078422244
+ *		- Samuel Gronseth		- 9077184696
+ *		- Burak Marmara			- 9075650144
  * @section LICENSE
  * Copyright (c) 2012 Database Group, Computer Sciences Department, University of Wisconsin-Madison.
  */
@@ -66,7 +71,7 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
     	bufMgr -> allocPage(file, rootPageNum, (Page *&)rootPage); 
 		memset(rootPage, 0, Page::SIZE);
 
-		strcpy(meta -> relationName, relationName.c_str()); //strncpy ?
+		strcpy(meta -> relationName, relationName.c_str());
 		meta -> attrByteOffset = attrByteOffset;
 		meta -> attrType = attrType;
 		meta -> rootPageNo = rootPageNum;
@@ -80,7 +85,6 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 
 		// Scans Records
 		FileScan scan = FileScan(relationName, bufMgr);
-		//scanExecuting = true;
 		
 		try {
 			RecordId rid;
@@ -92,7 +96,7 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 			}
 		}
 		catch (EndOfFileException e) {
-			//bufMgr -> flushFile(file);
+			
 		}
 	}
 }
