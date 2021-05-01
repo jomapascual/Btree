@@ -376,42 +376,38 @@ void BTreeIndex::insertEntryHelper(const int key,
 
 void BTreeIndex::insertEntry(const void *key, const RecordId rid) 
 {
-	// Call the helper function to do the recursion while retrieving back new middle value and pageId if there is a split
-	int middleValueFromChild;
-	PageId newlyCreatedPageId;
-	insertEntryHelper(*(int*)key, rid, rootPageNum, &middleValueFromChild, &newlyCreatedPageId, rootIsLeaf);
+	PageId newPageId;
+	int midValChild;	
+	insertEntryHelper(*(int*)key, rid, rootPageNum, &midValChild, &newPageId, rootIsLeaf); // Gets new midVal and PageId in a split
 
-	// If there is a split to the root, create a new root
-	if ((int) newlyCreatedPageId != 0) {
-	  	// Allocate a new page for this new root
-	  	PageId newPageId;
-		Page* newPage;
-		bufMgr->allocPage(file, newPageId, newPage);
-		memset(newPage, 0, Page::SIZE);
-		NonLeafNodeInt* newRoot = (NonLeafNodeInt *)newPage;
+	if ((int) newPageId != 0) { // Checks for split in root
+		Page* root; // New root page number
+	  	PageId rootId;
+		bufMgr->allocPage(file, rootId, root);
+		memset(root, 0, Page::SIZE);
+		NonLeafNodeInt* rootPage = (NonLeafNodeInt *)root; // Converts to proper structure
 		
-		// Update the new page appropriately
-		newRoot->keyArray[0] = middleValueFromChild;
-		newRoot->pageNoArray[0] = rootPageNum;
-		newRoot->pageNoArray[1] = newlyCreatedPageId;
-		newRoot->size = 1;
-		if(rootIsLeaf) {
-			newRoot->level = 1;
-		} else {
-			newRoot->level = 0;
+		rootPage -> size = 1; // Updates the root page
+		rootPage -> keyArray[0] = midValChild;
+		rootPage -> pageNoArray[0] = rootPageNum;
+		rootPage -> pageNoArray[1] = newPageId;
+
+		if(!rootIsLeaf) {
+			rootPage -> level = 0;
+		} 
+		else {
+			rootPage -> level = 1;
 		}
 		rootIsLeaf = false;
 
-		// Update global variable and IndexMetaInfo page appropriately
-		Page *meta;
-		bufMgr->readPage(file, headerPageNum, meta);
-		IndexMetaInfo *metadata = (IndexMetaInfo *)meta;
-		metadata->rootPageNo = newPageId;
+		Page *newMeta; // Updates the first page
+		bufMgr -> readPage(file, headerPageNum, newMeta); // Reads the first page (meta)
+		IndexMetaInfo *metaPage = (IndexMetaInfo*) newMeta;
+		metaPage -> rootPageNo = newPageId;
 		rootPageNum = newPageId;
 
-		// Unpin the root and the IndexMetaInfo page
-		bufMgr->unPinPage(file, newPageId, true);
-		bufMgr->unPinPage(file, headerPageNum, true);
+		bufMgr -> unPinPage(file, headerPageNum, true); // Unpins at the end of inserting
+		bufMgr -> unPinPage(file, newPageId, true);
 	}
 }
 
