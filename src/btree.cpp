@@ -122,44 +122,46 @@ BTreeIndex::~BTreeIndex()
 * @param node  corresponding leaf node to be modified
 * @param index index of a particular key and rid to be inserted
 */
-void BTreeIndex::insertLeafNode(int key,
-				    RecordId rid,
-				    LeafNodeInt* node,
-					int index) {
-	// Shift to the right key after index and insert key at the appropriate position
-	memmove(&node->keyArray[index + 1], &node->keyArray[index], sizeof(int) * (INTARRAYLEAFSIZE - index - 1));
-	node->keyArray[index] = key;
-	
-	// Do the same for rid
-	memmove(&node->ridArray[index + 1], &node->ridArray[index], sizeof(RecordId) * (INTARRAYLEAFSIZE - index - 1));
-	node->ridArray[index] = rid;
+void BTreeIndex::insertLeafNode(int key, RecordId rid, LeafNodeInt* node, int index) {
+	int i = INTARRAYLEAFSIZE; // Number of keys in the leaf node // Maybe change to leafOccupancy ?
+	while((node -> ridArray[i-1].page_number == 0) && i > 0) { // Gets to the end of leafNode
+		i--;
+	}
+	while((node -> keyArray[i-1] > key) && i > 0) { // Shifts the previous ridKey pairs
+		node -> keyArray[i] = node -> keyArray[i-1];
+		node -> ridArray[i] = node -> ridArray[i-1];
+		i--;
+	}
+	node -> keyArray[i] = key; // Inserts ridKey to the leafNode
+	node -> ridArray[i] = rid;
 
 	// Increment size
 	node->size += 1;
 }
 
 /**
-* Insert a key and a page ID to the appropriate position and array of the given non-leaf node.
+* A helper method for inserting a nonleaf node in the B Tree
 *
-* @param key   key to be inserted to keyArray
-* @param childPageId   pageid to be inserted to pageNoArray
-* @param node  corresponding non-leaf node to be modified
+* @param key   inserted key
+* @param childPageId   inserted PageId
+* @param node  node that is modified
 * @param index index of a particular key and pageid to be inserted
 */
-void BTreeIndex::insertNonLeafNode(int key,
-				    PageId childPageId,
-					NonLeafNodeInt* node,
-					int index) {
-	// Shift to the right key after index and insert key at the appropriate position
-	memmove(&node->keyArray[index + 1], &node->keyArray[index], sizeof(int) * (INTARRAYNONLEAFSIZE - index - 1));
-	node->keyArray[index] = key;
-	
-	// Do the same for pid inside pageNoArray
-	memmove(&node->pageNoArray[index + 2], &node->pageNoArray[index + 1], sizeof(PageId) * (INTARRAYNONLEAFSIZE - index - 1));
-	node->pageNoArray[index + 1] = childPageId;
+void BTreeIndex::insertNonLeafNode(int key, PageId childPageId, NonLeafNodeInt* node, int index) {
+	int i = nodeOccupancy;
+	while((node -> pageNoArray[i] == 0) && i >= 0) {
+		i--;
+	}
+	while((node -> keyArray[i-1] > key) && i > 0) {
+		node -> keyArray[i] = node -> keyArray[i-1]; // Shifts the previous keyPage pairs
+		node -> pageNoArray[i+1] = node -> pageNoArray[i];
+		i--;
+	}
 
-	// Increment size
-	node->size += 1;
+	node -> keyArray[i] = key; // Inserts keyPage pair to the node
+	node -> pageNoArray[i+1] = childPageId;
+
+	node -> size += 1; // Increase node size
 }
 
 /**
