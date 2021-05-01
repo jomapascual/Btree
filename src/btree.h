@@ -233,10 +233,6 @@ class BTreeIndex {
    */
   int     attrByteOffset;
 
-  /**
-   * Number of keys in leaf node, depending upon the type of key.
-   */
-  int     leafOccupancy;
 
   /**
    * Number of keys in non-leaf node, depending upon the type of key.
@@ -271,10 +267,6 @@ class BTreeIndex {
    */
   int     lowValInt;
 
-  /**
-   * Low DOUBLE value for scan.
-   */
-  double  lowValDouble;
 
   /**
    * Low STRING value for scan.
@@ -286,10 +278,6 @@ class BTreeIndex {
    */
   int     highValInt;
 
-  /**
-   * High DOUBLE value for scan.
-   */
-  double  highValDouble;
 
   /**
    * High STRING value for scan.
@@ -351,7 +339,7 @@ class BTreeIndex {
 
   PageId initialRootPageNum;
 
-   const void splitLeaf(LeafNodeInt *currLeafNode, PageId leafPageNum, const int key, const RecordId rid, const int index, int* middleValueFromChild, PageId* newlyCreatedPageId);
+  const void splitLeaf(LeafNodeInt *currLeafNode, PageId leafPageNum, const int key, const RecordId rid, const int index, int* middleValueFromChild, PageId* newlyCreatedPageId);
 
  public:
 

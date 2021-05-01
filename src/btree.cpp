@@ -37,8 +37,6 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 	this->attrByteOffset = attrByteOffset;
 	attributeType = attrType;
 	scanExecuting = false;
-	leafOccupancy = INTARRAYLEAFSIZE;
-	nodeOccupancy = INTARRAYNONLEAFSIZE;
 
 	std::ostringstream idxStr;
 	idxStr << relationName << "." << attrByteOffset;
