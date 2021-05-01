@@ -350,6 +350,9 @@ class BTreeIndex {
             bool isLeafBool);
 
   PageId initialRootPageNum;
+
+   const void splitLeaf(LeafNodeInt *currLeafNode, PageId leafPageNum, const int key, const RecordId rid, const int index, int* middleValueFromChild, PageId* newlyCreatedPageId);
+
  public:
 
   /**
