@@ -68,7 +68,7 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
     	bufMgr -> allocPage(file, rootPageNum, (Page *&)rootPage); 
 		memset(rootPage, 0, Page::SIZE);
 
-		strcpy(meta -> relationName, relationName.c_str()); //strncpy ?
+		strcpy(meta -> relationName, relationName.c_str());
 		meta -> attrByteOffset = attrByteOffset;
 		meta -> attrType = attrType;
 		meta -> rootPageNo = rootPageNum;
@@ -82,7 +82,6 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 
 		// Scans Records
 		FileScan scan = FileScan(relationName, bufMgr);
-		//scanExecuting = true;
 		
 		try {
 			RecordId rid;
@@ -94,7 +93,7 @@ BTreeIndex::BTreeIndex(const std::string & relationName,
 			}
 		}
 		catch (EndOfFileException e) {
-			//bufMgr -> flushFile(file);
+			
 		}
 	}
 }
