@@ -1,6 +1,11 @@
 /**
  * @author See Contributors.txt for code contributors and overview of BadgerDB.
  *
+ * 		Names: 				Student IDs:
+ * 	   	- Jose Pascual			- 9078122448
+ *		- Samuel Ong			- 9078422244
+ *		- Samuel Gronseth		- 9077184696
+ *		- Burak Marmara			- 9075650144
  * @section LICENSE
  * Copyright (c) 2012 Database Group, Computer Sciences Department, University of Wisconsin-Madison.
  */
